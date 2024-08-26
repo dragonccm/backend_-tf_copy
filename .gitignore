@@ -1,5 +1,3 @@
-# Ignore file .env để bảo mật thông tin nhạy cảm
+node_modules
 .env
-
-# Ignore thư mục node_modules
-node_modules/
+.vercel
