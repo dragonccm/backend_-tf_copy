@@ -1,0 +1,5 @@
+# Ignore file .env để bảo mật thông tin nhạy cảm
+.env
+
+# Ignore thư mục node_modules
+node_modules/
