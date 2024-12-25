@@ -1,18 +1,22 @@
 import PlaylistRanking from "../models/playlistRanking_model";
 
-const getPlaylistRank = async (id) => {
-    if (id === "all") {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+const getPlaylistRank = async (idata) => {
+    const id = idata.id;
+    const startDate = idata.startDate;
+    const days = idata.days;
 
+    const start = new Date(startDate);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(start.getDate() - days + 1); // Go backwards for the specified number of days
+
+    if (id === "all") {
         const playlistRankings = await PlaylistRanking.aggregate([
             {
                 $match: {
                     rankingDate: {
-                        $gte: thirtyDaysAgo,
-                        $lte: today,
+                        $gte: end,
+                        $lte: start, // Use $lte to include the start date
                     },
                 },
             },
@@ -34,10 +38,8 @@ const getPlaylistRank = async (id) => {
             },
         ]);
 
-        const startDate = new Date(thirtyDaysAgo);
-        const endDate = new Date(today);
         const dateMap = new Map();
-        for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 1)) {
+        for (let date = new Date(end); date <= start; date.setDate(date.getDate() + 1)) {
             const formattedDate = date.toISOString().split('T')[0];
             dateMap.set(formattedDate, 0);
         }
@@ -52,16 +54,11 @@ const getPlaylistRank = async (id) => {
             DT: completePlaylistRankings,
         };
     } else {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); 
-        const tenDaysAgo = new Date();
-        tenDaysAgo.setDate(tenDaysAgo.getDate() - 10); 
-
         const playlistRanking = await PlaylistRanking.find({
             playlistId: id,
             rankingDate: {
-                $gte: tenDaysAgo, 
-                $lte: today,
+                $gte: end,
+                $lte: start, // Use $lte to include the start date
             },
         });
 

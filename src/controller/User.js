@@ -6,6 +6,8 @@ import {
   addBanSong,
   addLike,
   unLike,
+  getBlockedSong,
+  removeBlockedSong,
   getMyPlaylist,
   createMyPlaylist,
   addToMyPlaylist,
@@ -27,6 +29,8 @@ const multer = require("multer");
 
 const Infor = async (req, res) => {
   try {
+    console.log('ahhahahahahhah');
+    
     let data = await getInfor(req.user.id);
     if (data && data.EC == "0") {
       return res.status(200).json({
@@ -63,13 +67,14 @@ const editInfor = async (req, res) => {
         // Xử lý lỗi khi tải lên
         console.log(err);
         return res.status(200).json({
-          EM: "error from server",
+          EM: "Không thể tải ảnh lên",
           EC: "-1",
           DT: "",
         });
       } else if (!req.file) {
         form = {
           infor: {
+            username: req.body.username,
             email: req.body.email,
             birthday: req.body.birthday,
           },
@@ -98,12 +103,15 @@ const editInfor = async (req, res) => {
               }
             );
           });
+          console.log(imageUrl);
+          
         } catch (error) {
           // Xử lý lỗi nếu có
           console.log("Failed to upload image:", error);
         }
         form = {
           infor: {
+            username: req.body.username,
             email: req.body.email,
             birthday: req.body.birthday,
             avt: imageUrl,
@@ -120,7 +128,7 @@ const editInfor = async (req, res) => {
         });
       } else {
         return res.status(200).json({
-          EM: "error from server",
+          EM: data.EM,
           EC: "-1",
           DT: "",
         });
@@ -307,6 +315,7 @@ const getMyPl = async (req, res) => {
     });
   }
 };
+
 const createMyPl = async (req, res) => {
   try {
     const playlistname = req.body.data.playlistname;
@@ -527,6 +536,56 @@ const deleteMyPl = async (req, res) => {
     });
   }
 };
+const getBlocked = async (req, res) => {
+  try {
+    let data = await getBlockedSong(req.user.id);
+    if (data && data.EC == "0") {
+      return res.status(200).json({
+        EM: data.EM,
+        EC: "0",
+        DT: data.DT,
+      });
+    } else {
+      return res.status(200).json({
+        EM: data.EM,
+        EC: "-1",
+        DT: "",
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(200).json({
+      EM: "error from server",
+      EC: "-1",
+      DT: "",
+    });
+  }
+};
+const removeBlocked = async (req, res) => {
+  try {
+    let data = await removeBlockedSong(req.user.id,req.body.id);
+    if (data && data.EC == "0") {
+      return res.status(200).json({
+        EM: data.EM,
+        EC: "0",
+        DT: data.DT,
+      });
+    } else {
+      return res.status(200).json({
+        EM: data.EM,
+        EC: "-1",
+        DT: "",
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(200).json({
+      EM: "error from server",
+      EC: "-1",
+      DT: "",
+    });
+  }
+};
 module.exports = {
   Infor,
   editInfor,
@@ -535,6 +594,8 @@ module.exports = {
   addLikeSomething,
   unLikeSomething,
   getMyPl,
+  getBlocked,
+  removeBlocked,
   createMyPl,
   addToPlaylist,
   getAllUs,

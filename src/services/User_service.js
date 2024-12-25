@@ -8,7 +8,8 @@ const { v4: uuidv4 } = require("uuid");
 const { Nuxtify } = require("nuxtify-api");
 const SongRanking = require("../models/songRanking_model.js");
 const PlaylistRanking = require("../models/playlistRanking_model.js");
-import { AssemblyAI } from 'assemblyai'
+import {getIO}  from "../socket/socketConfig.js";
+
 const getInfor = async (id) => {
   let user = await User.findOne({ id: id });
   if (user) {
@@ -23,43 +24,49 @@ const getInfor = async (id) => {
 };
 const updateInfor = async (data, id) => {
   const newInfor = data.infor;
-  const existingUser = await User.findOne({ email: newInfor.email });
-  if (existingUser) {
-    if (existingUser.id === newInfor.id) {
-      const updateUser = await User.findOneAndUpdate({ id: id }, newInfor, {
-        upsert: true,
-        new: true,
-      }).select("-_id username email birthday avt");
-      if (updateUser) {
-        return {
-          EM: "updated successfully",
-          EC: "0",
-          DT: updateUser,
-        };
-      } else {
-        console.log(
-          "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
-        );
-        return false;
-      }
-    }
+  console.log(newInfor);
+  const user = await User.findOne({ id: id });
+  const checkUsername = await User.findOne({ username: newInfor.username });
+  if (checkUsername && user.username != newInfor.username) {
+    return {
+      EM: "Username is already",
+      EC: "1",
+      DT: [],
+    };
+    
     // Nếu đã có tài khoản sử dụng địa chỉ email này, xử lý logic trả về thông báo hoặc hành động phù hợp.
   } else {
-    const updateUser = await User.findOneAndUpdate({ id: id }, newInfor, {
-      upsert: true,
-      new: true,
-    }).select("-_id username email birthday avt");
-    if (updateUser) {
+    const checkEmail = await User.findOne({ email: newInfor.email });
+    if (checkEmail  && user.email != newInfor.email) {
       return {
-        EM: "updated successfully",
-        EC: "0",
-        DT: updateUser,
+        EM: "Email is already",
+        EC: "1",
+        DT: [],
+      };
+    }else if (user.type=='email'  && user.email != newInfor.email) {
+      return {
+        EM: "Không được đổi email này!!",
+        EC: "1",
+        DT: [],
       };
     } else {
-      console.log(
-        "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
-      );
-      return false;
+        const updateUser = await User.findOneAndUpdate({ id: id }, newInfor, {
+          upsert: true,
+          new: true,
+        }).select("-_id username email birthday avt");
+        if (updateUser) {
+          return {
+            EM: "updated successfully",
+            EC: "0",
+            DT: updateUser,
+          };
+        } else {
+          console.log(
+            "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+          );
+          return false;
+        }
+      
     }
   }
 };
@@ -154,10 +161,12 @@ const addBanSong = async (songId, id) => {
     { upsert: true }
   );
   if (updateUser) {
+    const userUpdate = await User.findOne({ id: id });
+
     return {
       EM: "Bài nhạc đã bị cấm",
       EC: "0",
-      DT: "",
+      DT: userUpdate.banSongs,
     };
   } else {
     return {
@@ -260,7 +269,6 @@ const addLike = async (data, id) => {
 };
 const unLike = async (data, id) => {
   let updateData;
-  console.log(data);
   if (data.type == "song") {
     let ps = await Song.findOne({ id: data.id });
     let songRanking = await SongRanking.findOne({ songId: data.id });
@@ -355,10 +363,9 @@ const unLike = async (data, id) => {
 const getMyPlaylist = async (idUser) => {
   try {
     const getUser = await User.findOne({ id: idUser });
-
     if (getUser.myPlayLists.length > 0) {
       const getplaylist = async (id) => {
-        return await Playlist.findOne({ playlistId: id });
+        return await Playlist.findOne({ playlistId: id }).select('playlistId playlistname thumbnail songid');
       };
       const playlistPromises = getUser.myPlayLists.map((idPlaylist) => {
         return getplaylist(idPlaylist);
@@ -403,15 +410,12 @@ const createMyPlaylist = async (user, playlistname) => {
     const hasDuplicate = await isDuplicateName(playlistname);
     if (!hasDuplicate) {
       const newPlaylistID = uuidv4().substring(0, 8).toUpperCase();
-      console.log("nowwwwwwwwwwwwwwwwwwwwwww");
       //Tạo playlist mới với các thông tin tương ứng
       const createdPlaylist = new Playlist({
         playlistId: newPlaylistID,
         playlistname: playlistname,
         genresid: [],
         artistsId: [user.id],
-        thumbnail:
-          "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/f/3/a/f/f3af71df0b7a68ec44955faa5dc7d0ce.jpg",
         description: "/",
         songid: [],
         like: 0,
@@ -422,7 +426,6 @@ const createMyPlaylist = async (user, playlistname) => {
 
       // Lưu playlist
       const data1 = await createdPlaylist.save();
-      console.log("nvvvvvvvvvvvvvvvvvvvvvvvvvvv");
 
       //Thêm playlistId vào mảng playlistId của user
       // getUser.myPlayLists.push(newPlaylistID);
@@ -580,37 +583,7 @@ const getGenres = async (data) => {
   }
 };
 const adminHomeService = async () => {
-
-  // kfjgkjf
-  // npm install assemblyai
-
-
-  const client = new AssemblyAI({
-    apiKey: '7a136dfcb51d4e579a8b13d3405b9b5a'
-  })
-
-  const audioUrl =
-    'https://res.cloudinary.com/dyk4plxlj/video/upload/v1717775620/chuy%E1%BB%85nthuign_rbtlwh.mp3'
-
-  const params = {
-    audio: audioUrl,
-    punctuate: false,
-    format_text: false,
-    language_detection: true,
-    word_boost: ['aws', 'azure', 'google cloud'],
-    boost_param: 'high'
-  }
-  const run = async () => {
-    const transcript = await client.transcripts.transcribe(params)
-    console.log(transcript.text)
-    console.log(transcript.words)
-  }
-
-  run()
-  // kdjfkdjfk
-
-
-  try {
+   try {
     const songs = await Song.countDocuments({});
     const Genre = await genre.countDocuments({});
     const playlist = await Playlist.countDocuments({});
@@ -641,15 +614,17 @@ const getMylikesSongs = async (idUser) => {
 
     if (getUser.likedSongs.length > 0) {
       const getsong = async (id) => {
-        return await Song.findOne({ id: id });
+        const song = await Song.findOne({ id: id }).select('id songname thumbnail duration songLink');
+        return song 
       };
       const getplaylist = async (id) => {
-        return await Playlist.findOne({ playlistId: id });
+        const playlist = await Playlist.findOne({ playlistId: id }).select('playlistId playlistname thumbnail');
+        return playlist
       };
       const songPromises = getUser.likedSongs.map((idSong) => {
         return getsong(idSong);
       });
-      const songs = await Promise.all(songPromises);
+      const songs = await Promise.all(songPromises).then(songs => songs.filter(song => song !== null));
 
       const playlistPromises = getUser.likedPlayLists.map((idplaylist) => {
         return getplaylist(idplaylist);
@@ -666,6 +641,68 @@ const getMylikesSongs = async (idUser) => {
         EM: "Lấy danh sách nhạc đã thich thành công!",
         EC: "0",
         DT: { songs: [], playlist: [] },
+      };
+    }
+  } catch (err) {
+    return {
+      EM: "Lấy danh sách nhạc đã thich thất bại!",
+      EC: "-1",
+      DT: "",
+    };
+  }
+};
+const getBlockedSong = async (idUser) => {
+  try {
+    const getUser = await User.findOne({ id: idUser });
+
+    if (getUser.banSongs.length > 0) {
+      const getsong = async (id) => {
+        return await Song.findOne({ id: id }).select('id songname thumbnail songLink');
+      };
+      const songPromises = getUser.banSongs.map((idSong) => {
+        return getsong(idSong);
+      });
+      const songs = await Promise.all(songPromises);
+      return {
+        EM: "Lấy danh sách nhạc đã thich thành công!",
+        EC: "0",
+        DT: songs,
+      };
+    } else {
+      return {
+        EM: "Lấy danh sách nhạc đã thich thành công!",
+        EC: "0",
+        DT: [],
+      };
+    }
+  } catch (err) {
+    return {
+      EM: "Lấy danh sách nhạc đã thich thất bại!",
+      EC: "-1",
+      DT: "",
+    };
+  }
+};
+const removeBlockedSong = async (idUser,id) => {
+  try {
+    const getUser =await User.findOneAndUpdate(
+      { id: idUser },
+      { $pull: { banSongs: id } },
+      { new: true } 
+    );
+
+    if (getUser) {
+      const userUpdate = await User.findOne({ id: idUser });
+      return {
+        EM: "Unban thành công!",
+        EC: "0",
+        DT: userUpdate.banSongs,
+      };
+    } else {
+      return {
+        EM: "Unban thất bại!",
+        EC: "1",
+        DT: '',
       };
     }
   } catch (err) {
@@ -722,6 +759,8 @@ const changeRole = async (data) => {
       );
       if (result.modifiedCount > 0) {
         updateData = data.role;
+        const io = getIO();
+        io.emit('ban_user', userID);
       }
     } else {
       return {
@@ -801,4 +840,5 @@ module.exports = {
   changeRole,
   deleteMyPlaylist,
   resetpassword,
+  getBlockedSong,removeBlockedSong
 };

@@ -32,9 +32,12 @@ const CreateOtp = async (valueLogin) => {
         newOtp.save();
 
         const data = {
-          receiver: [{ name: "HT90", email: `${user.email}` }],
+          receiver: [user.email],
           subject: `${otp} là mã OTP của bạn`,
-          description: { otp: `${otp}` },
+          description: {
+            content: "mail",
+            otp: `${otp}`
+          },
           template: "otpMS",
           mail_type: "text/html",
         };

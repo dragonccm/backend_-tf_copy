@@ -18,6 +18,7 @@ const songSchema = new Schema({
   thumbnail: {
     type: String,
     required: true,
+    default: "https://photo-resize-zmp3.zmdcdn.me/w600_r1x1_jpeg/cover/3/2/a/3/32a35f4d26ee56366397c09953f6c269.jpg",
   },
   alias: {
     type: String,
@@ -25,7 +26,7 @@ const songSchema = new Schema({
     index: true,
   },
   artists: {
-    type: Array,
+    type: [String], // Ensure this is an array of strings
     required: true,
     trim: true,
     index: true,
@@ -75,6 +76,10 @@ const songSchema = new Schema({
     trim: true,
     default: 0,
   },
+  // ranking: {
+  //   type: Schema.Types.ObjectId, // Sử dụng ObjectId để tạo liên kết với SongRanking
+  //   ref: 'SongRanking', // Xác định model liên kết là SongRanking
+  // },
   createdAt: {
     type: Date,
     default: Date.now,

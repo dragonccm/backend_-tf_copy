@@ -1,4 +1,6 @@
 const Song = require('../../models/sonng_model');
+const Ar = require('../../models/artists_model');
+const Genre = require('../../models/genre_model');
 const { v4: uuidv4 } = require("uuid");
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
@@ -14,9 +16,8 @@ const upload = multer({
   { name: "file", maxCount: 1 },
   { name: "songLink", maxCount: 1 }
 ]);
-
+import { AssemblyAI } from 'assemblyai'
 const adminS = async (req, res) => {
-  console.log(req.status);
   try {
     upload(req, res, async function (err) {
       // upate !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -81,6 +82,48 @@ const adminS = async (req, res) => {
             }
           }
 
+          const newArtistId = artists.split(",");
+          const newArtistPromises = newArtistId.map(async (artist) => {
+            const artistData = await Ar.findOne({ id: artist });
+            if (artistData) {
+              await Ar.updateOne({ id: artist }, { $push: { songListId: artist } });
+            } else {
+              await Ar.create({
+                id: artist,
+                artistsName: "",
+                avt: "",
+                alias: "",
+                biography: "",
+                birthday: "",
+                realName: "",
+                songListId: [id],
+                playListId: [],
+                totalFollow: 0
+              });
+            }
+          });
+          await Promise.all(newArtistPromises);
+
+          const newGenresId = genresid.split(",");
+          const newGenrePromises = newGenresId.map(async (genre) => {
+            const genreData = await Genre.findOne({ genreId: genre });
+            if (genreData) {
+              await Genre.updateOne({ genreId: genre }, { $push: { songListId: genre } });
+            } else {
+              await Genre.create({
+                genreId: genre,
+                genrename: "",
+                thumbnail: "",
+                thumbnailHasText: "",
+                thumbnailR: "",
+                description: "",
+                playListId: [id],
+                listen: 0,
+                state: 1
+              });
+            }
+          });
+          await Promise.all(newGenrePromises);
           form = {
 
             id: id,
@@ -92,6 +135,7 @@ const adminS = async (req, res) => {
             duration: duration
 
           };
+          
         } else if (req.files.songLink && !req.files.file) {
           const id = req.body.id;
           const songname = req.body.songname;
@@ -116,7 +160,48 @@ const adminS = async (req, res) => {
               console.log("Failed to upload songLink:", error);
             }
           }
+          const newArtistId = artists.split(",");
+          const newArtistPromises = newArtistId.map(async (artist) => {
+            const artistData = await Ar.findOne({ id: artist });
+            if (artistData) {
+              await Ar.updateOne({ id: artist }, { $push: { songListId: artist } });
+            } else {
+              await Ar.create({
+                id: artist,
+                artistsName: "",
+                avt: "",
+                alias: "",
+                biography: "",
+                birthday: "",
+                realName: "",
+                songListId: [id],
+                playListId: [],
+                totalFollow: 0
+              });
+            }
+          });
+          await Promise.all(newArtistPromises);
 
+          const newGenresId = genresid.split(",");
+          const newGenrePromises = newGenresId.map(async (genre) => {
+            const genreData = await Genre.findOne({ genreId: genre });
+            if (genreData) {
+              await Genre.updateOne({ genreId: genre }, { $push: { songListId: genre } });
+            } else {
+              await Genre.create({
+                genreId: genre,
+                genrename: "",
+                thumbnail: "",
+                thumbnailHasText: "",
+                thumbnailR: "",
+                description: "",
+                playListId: [id],
+                listen: 0,
+                state: 1
+              });
+            }
+          });
+          await Promise.all(newGenrePromises);
           form = {
             id: id,
             songname: songname,
@@ -147,7 +232,48 @@ const adminS = async (req, res) => {
               console.log("Failed to upload file:", error);
             }
           }
+          const newArtistId = artists.split(",");
+          const newArtistPromises = newArtistId.map(async (artist) => {
+            const artistData = await Ar.findOne({ id: artist });
+            if (artistData) {
+              await Ar.updateOne({ id: artist }, { $push: { songListId: artist } });
+            } else {
+              await Ar.create({
+                id: artist,
+                artistsName: "",
+                avt: "",
+                alias: "",
+                biography: "",
+                birthday: "",
+                realName: "",
+                songListId: [id],
+                playListId: [],
+                totalFollow: 0
+              });
+            }
+          });
+          await Promise.all(newArtistPromises);
 
+          const newGenresId = genresid.split(",");
+          const newGenrePromises = newGenresId.map(async (genre) => {
+            const genreData = await Genre.findOne({ genreId: genre });
+            if (genreData) {
+              await Genre.updateOne({ genreId: genre }, { $push: { songListId: genre } });
+            } else {
+              await Genre.create({
+                genreId: genre,
+                genrename: "",
+                thumbnail: "",
+                thumbnailHasText: "",
+                thumbnailR: "",
+                description: "",
+                playListId: [id],
+                listen: 0,
+                state: 1
+              });
+            }
+          });
+          await Promise.all(newGenrePromises);
           form = {
             id: id,
             songname: songname,
@@ -160,6 +286,48 @@ const adminS = async (req, res) => {
           const songname = req.body.songname;
           const artists = req.body.artists;
           const genresid = req.body.genresid;
+          const newArtistId = artists.split(",");
+          const newArtistPromises = newArtistId.map(async (artist) => {
+            const artistData = await Ar.findOne({ id: artist });
+            if (artistData) {
+              await Ar.updateOne({ id: artist }, { $push: { songListId: artist } });
+            } else {
+              await Ar.create({
+                id: artist,
+                artistsName: "",
+                avt: "",
+                alias: "",
+                biography: "",
+                birthday: "",
+                realName: "",
+                songListId: [id],
+                playListId: [],
+                totalFollow: 0
+              });
+            }
+          });
+          await Promise.all(newArtistPromises);
+
+          const newGenresId = genresid.split(",");
+          const newGenrePromises = newGenresId.map(async (genre) => {
+            const genreData = await Genre.findOne({ genreId: genre });
+            if (genreData) {
+              await Genre.updateOne({ genreId: genre }, { $push: { songListId: genre } });
+            } else {
+              await Genre.create({
+                genreId: genre,
+                genrename: "",
+                thumbnail: "",
+                thumbnailHasText: "",
+                thumbnailR: "",
+                description: "",
+                playListId: [id],
+                listen: 0,
+                state: 1
+              });
+            }
+          });
+          await Promise.all(newGenrePromises);
           form = {
             id: id,
             songname: songname,
@@ -208,7 +376,7 @@ const adminS = async (req, res) => {
             EC: "-1",
             DT: ""
           });
-        } else if (req.body.songname=== "" || req.body.artists === "" || req.body.genresid === "" || req.body.songLink === "") {
+        } else if (req.body.songname === "" || req.body.artists === "" || req.body.genresid === "" || req.body.songLink === "") {
           return res.status(200).json({
             EM: "không được để trống",
             EC: "-1",
@@ -244,22 +412,104 @@ const adminS = async (req, res) => {
             console.log("Failed to upload file:", error);
           }
           const newIDSong = uuidv4().substring(0, 8).toUpperCase();
+          // kfjgkjf
+          const client = new AssemblyAI({
+            apiKey: '7a136dfcb51d4e579a8b13d3405b9b5a'
+          })
+          const audioUrl = songLinkUrl
+
+          const params = {
+            audio: audioUrl,
+            punctuate: false,
+            speech_model: 'best',
+            format_text: false,
+            language_detection: true,
+            word_boost: ['aws', 'azure', 'google cloud'],
+            boost_param: 'high',
+            filter_profanity: false,
+          }
+          const transcript = await client.transcripts.transcribe(params)
+          const new_lyric = [];
+          let tempArray = [];
+          transcript.words.forEach((word, index) => {
+            tempArray.push(word);
+
+            if ((index + 1) % 5 === 0 || index === transcript.words.length - 1) {
+              new_lyric.push({
+                words: tempArray.map((item) => {
+                  return {
+                    startTime: item.start,
+                    endTime: item.end,
+                    data: item.text
+                  }
+                })
+              });
+              tempArray = [];
+            }
+          });
+
+          // kdjfkdjfk
+          const newArtistId = artists.split(",");
+          const newArtistPromises = newArtistId.map(async (artist) => {
+            const artistData = await Ar.findOne({ id: artist });
+            if (artistData) {
+              const newSongList = artistData.songListId;
+              newSongList.push(artist);
+              await Ar.updateOne({ id: artist }, { songListId: newSongList });
+            } else {
+              await Ar.create({
+                id: artist,
+                artistsName: "",
+                avt: "",
+                alias: "",
+                biography: "",
+                birthday: "",
+                realName: "",
+                songListId: [id],
+                playListId: [],
+                totalFollow: 0
+              });
+            }
+          });
+          await Promise.all(newArtistPromises);
+
+          const newGenresId = genresid.split(",");
+          const newGenrePromises = newGenresId.map(async (genre) => {
+            const genreData = await Genre.findOne({ genreId: genre });
+            if (genreData) {
+              await Genre.updateOne({ genreId: genre }, { $push: { songListId: genre } });
+            } else {
+              await Genre.create({
+                genreId: genre,
+                genrename: "",
+                thumbnail: "",
+                thumbnailHasText: "",
+                thumbnailR: "",
+                description: "",
+                playListId: [id],
+                listen: 0,
+                state: 1
+              });
+            }
+          });
+          await Promise.all(newGenrePromises);
           form = {
             infor: {
               id: newIDSong,
               songname: songname,
               thumbnail: fileUrl,
               alias: songname,
-              artists: artists.split(","),
+              artists: newArtistId,
               genresid: genresid.split(","),
               songLink: songLinkUrl,
               duration: duration,
+              lyric: new_lyric,
               like: 0,
               listen: 0,
             }
           };
         }
-        console.log(form.infor);
+
         let data = await Song.create(form.infor);
         if (data) {
           return res.status(200).json({
@@ -279,31 +529,31 @@ const adminS = async (req, res) => {
         let data;
         const song = await Song.findOne({ id: req.body.id });
         if (song) {
-            const newState = song.state === 1 ? 0 : 1;
-            data = await Song.updateOne({ id: req.body.id }, { state: newState });
-            console.log(data);
-            // Kiểm tra xem cập nhật đã thành công hay không
-            if (data.modifiedCount > 0) {
-                return res.status(200).json({
-                    EM: "success",
-                    EC: "0",
-                    DT: data
-                });
-            } else {
-                return res.status(200).json({
-                    EM: "error from server",
-                    EC: "-1",
-                    DT: "No update made"
-                });
-            }
-        } else {
+          const newState = song.state === 1 ? 0 : 1;
+          data = await Song.updateOne({ id: req.body.id }, { state: newState });
+          
+          // Kiểm tra xem cập nhật đã thành công hay không
+          if (data.modifiedCount > 0) {
             return res.status(200).json({
-                EM: "error from server",
-                EC: "-1",
-                DT: "Song not found"
+              EM: "success",
+              EC: "0",
+              DT: data
             });
+          } else {
+            return res.status(200).json({
+              EM: "error from server",
+              EC: "-1",
+              DT: "No update made"
+            });
+          }
+        } else {
+          return res.status(200).json({
+            EM: "error from server",
+            EC: "-1",
+            DT: "Song not found"
+          });
         }
-    }
+      }
     });
   } catch (err) {
     console.log(err);
@@ -315,6 +565,19 @@ const adminS = async (req, res) => {
   }
 }
 
+const call = async (req, res) => {
+  try {
+    const { id } = req.params; // Ensure id is defined from request parameters
+    // ...existing code...
+    const songListId = [id]; // Use the defined id variable
+    // ...existing code...
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 module.exports = {
-  adminS
+  adminS,
+  call
 };

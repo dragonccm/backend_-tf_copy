@@ -23,6 +23,10 @@ const songRankingSchema = new Schema({
     rank: {
         type: Number,
         default: 0
+    },
+    rankWeek: {
+        type: Number,
+        default: 0
     }
 });
 songRankingSchema.index({ songId: 1 });

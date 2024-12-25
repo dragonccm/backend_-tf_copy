@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const ArtistsSchema = new Schema({
     id: {
-        type: String,
+        type: String, // Ensure this is a string
         required: true,
         unique: true,
         trim: true,
@@ -80,8 +80,8 @@ const ArtistsSchema = new Schema({
 });
 
 
-ArtistsSchema.index({ id: 1, ArtistsName: 1 }, { unique: true });
-ArtistsSchema.index({ ArtistsName: 'text' });
+ArtistsSchema.index({ id: 1, artistsName: 1 }, { unique: true });
+ArtistsSchema.index({ artistsName: 'text' });
 
 
 

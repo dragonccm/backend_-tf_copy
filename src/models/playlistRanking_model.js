@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const { Schema } = require('mongoose');
 
 const playlistRankingSchema = new Schema({
-
     rankingDate: {
         type: Date,
         default: Date.now

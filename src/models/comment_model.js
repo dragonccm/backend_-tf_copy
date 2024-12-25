@@ -15,6 +15,11 @@ const commentSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    parentId: {
+        type: String,
+        default: undefined,
+        required: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

@@ -21,10 +21,10 @@ const getartist = async (req, res) => {
         const seconds2 = date2.getSeconds();
         const seconds1 = date1.getSeconds();
 
-        console.log("Seconds1:", seconds1);
-        console.log("Seconds2:", seconds2);
+        // console.log("Seconds1:", seconds1);
+        // console.log("Seconds2:", seconds2);
 
-        console.log(date2);
+        // console.log(date2);
         return res.json(url);
     };
     getSongmp3();
@@ -57,12 +57,15 @@ const gethome = async (req, res) => {
 };
 
 const getArtist = async (req, res) => {
+    // id là alias 
     const artistId = req.params.id;
     await Ar.findOne({ alias: artistId }).then(async (data) => {
         if (data) {
             const songListId = data.songListId;
             const playListId = data.playListId;
-            console.log(songListId);
+            
+            // console.log(songListId);
+
             for (let i = 0; i < songListId.length; i++) {
                 const song = await Song.findOne({ id: songListId[i] }).select("songname thumbnail id artists");
                 if (song) {
@@ -78,8 +81,8 @@ const getArtist = async (req, res) => {
             return res.json(data);
         } else {
             const getSongmp3 = async () => {
-                const songly = await Nuxtify.getSongDetail(data.songListId);
-                return res.json(songly);
+                const songly = await Nuxtify.getArtist(artistId);
+                return res.json(songly.data);
             };
             getSongmp3();
         }
@@ -104,7 +107,7 @@ const search = async (req, res) => {
     const searchterm = async () => {
         try {
             const keyword = req.params.id;
-            const artistResults = await Ar.find({ alias: { $regex: keyword, $options: "i" } }, { artistsName: 1, avt: 1, id: 1 }).limit(5);
+            const artistResults = await Ar.find({ alias: { $regex: keyword, $options: "i" } }, { artistsName: 1, avt: 1, id: 1, alias:1 }).limit(5);
             const playlistResults = await Playlist.find({ playlistname: { $regex: keyword, $options: "i" } }, { thumbnail: 1, playlistId: 1, playlistname: 1, artistsId: 1 }).limit(5);
             const songResults = await Song.find({ songname: { $regex: keyword, $options: "i" } }, { thumbnail: 1, songname: 1, id: 1, artists: 1 }).limit(5);
 

@@ -29,7 +29,7 @@ const userSchema = new Schema({
         unique: true,
         trim: false,
         index: true,
-        default: ''
+        default: 'https://res.cloudinary.com/drupmc7qd/image/upload/v1726022375/wkn1tvvp8ehijmwelmt9.jpg'
     },
     email: {
         type: String,

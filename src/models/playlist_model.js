@@ -29,13 +29,14 @@ const playlistSchema = new Schema({
     },
     thumbnail: {
         type: String,
-        required: true
+        default: 'https://photo-zmp3.zmdcdn.me/album_default.png',
     },
     type: {
         type: String,
-        required: true
+        required: true,
+        default: 'playlist',
     },
-    description: { //Sửa lại trường 'desciption' thành 'description'
+    description: {
         type: String,
         required: true,
         trim: true,
@@ -62,7 +63,7 @@ const playlistSchema = new Schema({
         type: Number,
         required: true,
         trim: true,
-        default:0,
+        default: 0,
     },
     createdAt: {
         type: Date,

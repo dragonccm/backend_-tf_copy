@@ -117,16 +117,15 @@ const checkAccount = async (req, res) => {
       EC: "0",
       DT: {
         access_token: req.token,
-        // groupWithRole:req.user.groupWithRole,
-        email: req.user.email,
-        username: req.user.username,
         avt: account.DT.avt|| '',
         myPlayLists: account.DT.myPlayLists,
         likedSongs: account.DT.likedSongs,
+        blockSong: account.DT.banSongs,
         likedPlayLists: account.DT.likedPlayLists,
         isAdmin: account.DT.role == "0" ? true: false,
         isBan: account.DT.role == "2" ? true : false,
         id: account.DT.id,
+        type_login: account.DT.type_login
       },
     });
   } else {

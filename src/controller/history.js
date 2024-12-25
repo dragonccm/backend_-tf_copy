@@ -36,6 +36,8 @@ const addToHistory = async (req, res) => {
 };
 const getHistory = async (req, res) => {
   try {
+    console.log(req.user.id);
+    
       const myHistory = await getMyHistory(req.user.id);
     if (myHistory) {
       return res.status(200).json({

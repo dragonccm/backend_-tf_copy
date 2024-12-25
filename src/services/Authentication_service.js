@@ -132,6 +132,7 @@ const handleAuthGG = async (token) => {
     const user = await User.findOne({
       token: token,
     });
+    console.log(user)
     if (user) {
       user.token = generateId();
       await user.save();

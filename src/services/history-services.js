@@ -1,7 +1,7 @@
 import History from "../models/history.js";
 import Song from "../models/sonng_model.js";
 import Playlist from "../models/playlist_model.js";
-import addRanking from "./rankCliend.js"
+import {addRanking} from "./rankCliend.js"
 
 const addHistory = async (idUser, data) => {
   let roles;
@@ -52,7 +52,7 @@ const addHistory = async (idUser, data) => {
 const getMyHistory = async (idUser) => {
   let user = await History.findOne({ userId: idUser });
   if (user) {
-    console.log(user);
+    // console.log(user);
     const playlistIds = user.PlaylistHistory;
     const songId = user.SongHistory;
     const playlistInfoArray = new Array(playlistIds.length);
@@ -60,7 +60,7 @@ const getMyHistory = async (idUser) => {
 
     // Lặp qua từng id playlist và tìm playlist dựa trên id
     const playlistPromises = playlistIds.map((playlistId, index) => {
-      return Playlist.findOne({ playlistId: playlistId })
+      return Playlist.findOne({ playlistId: playlistId }).select('playlistId playlistname thumbnail')
         .then((playlist) => {
           if (playlist) {
             playlistInfoArray[index] = playlist;
@@ -73,7 +73,7 @@ const getMyHistory = async (idUser) => {
 
     // Lặp qua từng id song và tìm song dựa trên id
     const songPromises = songId.map((id, index) => {
-      return Song.findOne({ id: id, state: { $ne: 1 } })
+      return Song.findOne({ id: id, state: { $ne: 1 } }).select('id songname thumbnail duration songLink')
         .then((songItem) => {
           if (songItem) {
             songInfoArray[index] = songItem;
@@ -102,14 +102,14 @@ const getMyHistory = async (idUser) => {
       return {
         EM: "thêm vào lịch sử thất bại!",
         EC: "1",
-        DT: "",
+        DT: { playlist: [], song: [] },
       };
     }
   } else {
     return {
-      EM: "thêm vào lịch sử thất bại!",
+      EM: "Không thấy tài khoản",
       EC: "1",
-      DT: "",
+      DT: { playlist: [], song: [] },
     };
   }
 };

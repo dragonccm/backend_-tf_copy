@@ -1,13 +1,18 @@
-import { getPlaylistRank } from "../services/getdatePlaylitstRankListen_service.js"
+const { getPlaylistRankListen } = require('../services/getdatePlaylitstRankListen_service');
 
 const getPlaylistRankListenControl = async (req, res) => {
-  const playlistId = req.params.id;
-  const data = await getPlaylistRank(playlistId)
+  const idata = req.body;
+  const data = await getPlaylistRankListen(idata);
   if (data.EC == "0") {
     return res.status(200).json({
       EM: data.EM,
       EC: "0",
-      DT: { data: data.DT },
+      DT: data.DT,
+    });
+  } else {
+    return res.status(400).json({
+      EM: data.EM,
+      EC: data.EC,
     });
   }
 }
