@@ -14,8 +14,9 @@
   "author": "HT90",
   "license": "ISC",
   "dependencies": {
-    "@babel/core": "^7.24.3",
-    "@babel/node": "^7.23.9",
+    "@babel/cli": "^7.x",
+    "@babel/core": "^7.x",
+    "@babel/preset-env": "^7.x",
     "@google-cloud/local-auth": "^2.1.0",
     "assemblyai": "^4.6.1",
     "babel-node": "^0.0.1-security",
