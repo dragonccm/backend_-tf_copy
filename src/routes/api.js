@@ -162,7 +162,7 @@ const initApiRouter = (app) => {
     },
     (req, res) => {
         res.redirect(
-            `http://localhost:3000/login-gg-success/${req.user.token}`
+            `https://wtf-music-fontend-pst6i21cg-dragonccms-projects.vercel.app/login-gg-success/${req.user.token}`
           );
       // handleLogingg(req, res,req.user)
     }
@@ -182,7 +182,7 @@ const initApiRouter = (app) => {
       })(req, res, next);
     },
     (req, res) => {
-      res.redirect(`http://localhost:3000/login-gg-success/${req.user.token}`);
+      res.redirect(`https://wtf-music-fontend-pst6i21cg-dragonccms-projects.vercel.app/login-gg-success/${req.user.token}`);
       // handleLogingg(req, res,req.user)
     }
   );
