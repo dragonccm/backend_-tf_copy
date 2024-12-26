@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec babel-node src/server.js",
-    "build": "babel src -d dist"
+    "start": "nodemon --exec babel-node src/server.js"
   },
   "keywords": [
     "wtfMusic"
@@ -14,6 +13,8 @@
   "author": "HT90",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.24.3",
+    "@babel/node": "^7.23.9",
     "@google-cloud/local-auth": "^2.1.0",
     "assemblyai": "^4.6.1",
     "babel-node": "^0.0.1-security",
@@ -34,6 +35,7 @@
     "mongodb": "^6.3.0",
     "mongoose": "^8.2.0",
     "multer": "^1.4.5-lts.1",
+    "node-schedule": "^2.1.1",
     "nuxtify-api": "^2.2.0",
     "otp-generator": "^4.0.1",
     "passport": "^0.7.0",
@@ -42,14 +44,15 @@
     "react-admin": "^4.16.15",
     "react-copy-to-clipboard": "^5.1.0",
     "react-toastify": "^10.0.4",
+    "scheduler": "^0.23.2",
+    "socket.io": "^4.7.5",
     "uploadthing": "^6.10.4",
     "uuid": "^9.0.1",
-    "uuidv4": "^6.2.13"
+    "uuidv4": "^6.2.13",
+    "zingmp3-api-full-v3": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.26.4",
-    "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-env": "^7.24.3",
     "nodemon": "^3.1.0"
   }
 }
