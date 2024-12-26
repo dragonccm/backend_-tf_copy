@@ -3,7 +3,7 @@ let io;
 const setupWebSocket = (server) => {
      io = new Server(server, {
         cors: {
-          origin: 'https://wtf-music-fontend-pst6i21cg-dragonccms-projects.vercel.app',
+          origin: 'https://wtf-music-fontend.vercel.app',
           methods: ["GET","POST"]
         }
       });

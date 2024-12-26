@@ -21,7 +21,7 @@ const server = require('http').createServer(app);
 
 setupWebSocket(server);
 const corsOptions = {
-    origin: 'https://wtf-music-fontend-pst6i21cg-dragonccms-projects.vercel.app', 
+    origin: 'https://wtf-music-fontend.vercel.app', 
     optionsSuccessStatus: 200, 
     credentials: true,
   };
